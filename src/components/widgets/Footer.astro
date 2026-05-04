@@ -26,7 +26,7 @@ export interface Props {
 const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme = 'light' } = Astro.props;
 ---
 
-<footer class:list={[{ dark: theme === 'dark' }, 'relative border-t border-gray-200 dark:border-slate-800 not-prose']}>
+<footer class:list={[{ dark: theme === 'dark' }, 'relative not-prose']}>
   <div class="dark:bg-dark absolute inset-0 pointer-events-none" aria-hidden="true"></div>
   <div
     class="relative mx-auto max-w-5xl px-4 py-10 text-slate-700 sm:px-6 lg:py-12 dark:text-slate-300 intersect-once intersect-quarter intersect-no-queue"
@@ -89,9 +89,7 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
         }
       </nav>
     </div>
-    <div
-      class="mt-10 flex flex-col gap-4 border-t border-slate-200 pt-6 text-sm dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between"
-    >
+    <div class="mt-10 flex flex-col gap-4 text-sm sm:flex-row sm:items-center sm:justify-between">
       <div class="text-muted dark:text-slate-400">
         <Fragment set:html={footNote} />
       </div>
