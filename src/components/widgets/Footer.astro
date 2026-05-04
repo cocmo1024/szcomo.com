@@ -1,5 +1,4 @@
 ---
-import { Icon } from 'astro-icon/components';
 import { SITE } from 'astrowind:config';
 import { getHomePermalink } from '~/utils/permalinks';
 
@@ -23,13 +22,13 @@ export interface Props {
   theme?: string;
 }
 
-const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme = 'light' } = Astro.props;
+const { secondaryLinks = [], links = [], footNote = '', theme = 'light' } = Astro.props;
 ---
 
 <footer class:list={[{ dark: theme === 'dark' }, 'relative not-prose']}>
   <div class="dark:bg-dark absolute inset-0 pointer-events-none" aria-hidden="true"></div>
   <div
-    class="relative mx-auto max-w-5xl px-4 py-10 text-slate-700 sm:px-6 lg:py-12 dark:text-slate-300 intersect-once intersect-quarter intersect-no-queue"
+    class="relative mx-auto max-w-6xl px-4 py-10 text-slate-700 dark:text-slate-300 sm:px-6 lg:py-12 intersect-once intersect-quarter intersect-no-queue"
   >
     <div class="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,2fr)] lg:gap-14">
       <div class="max-w-sm">
@@ -42,11 +41,10 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
           machining.
         </p>
         <a
-          class="mt-5 inline-flex items-center gap-2 text-sm font-medium text-slate-800 underline underline-offset-4 hover:text-primary dark:text-slate-200 dark:hover:text-cyan-200"
+          class="mt-5 inline-flex text-sm font-medium text-slate-800 underline underline-offset-4 hover:text-primary dark:text-slate-200 dark:hover:text-cyan-200"
           href="mailto:info@szcomo.com"
           aria-label="Email project drawings and requirements to info@szcomo.com"
         >
-          <Icon name="tabler:mail" class="h-4 w-4" />
           info@szcomo.com
         </a>
         <div class="mt-5 flex flex-wrap gap-x-3 gap-y-2 text-sm text-muted">
@@ -93,27 +91,6 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
       <div class="text-muted dark:text-slate-400">
         <Fragment set:html={footNote} />
       </div>
-
-      {
-        socialLinks?.length ? (
-          <ul class="-ml-2 flex items-center gap-1 sm:ml-4 rtl:ml-0 rtl:-mr-2 rtl:sm:ml-0 rtl:sm:mr-4">
-            {socialLinks.map(({ ariaLabel, href, text, icon }) => (
-              <li>
-                <a
-                  class="inline-flex items-center rounded-md p-2 text-muted transition hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary dark:text-gray-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 dark:focus:ring-cyan-300"
-                  aria-label={ariaLabel}
-                  href={href}
-                >
-                  {icon && <Icon name={icon} class="h-5 w-5" />}
-                  <Fragment set:html={text} />
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          ''
-        )
-      }
     </div>
   </div>
 </footer>

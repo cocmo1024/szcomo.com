@@ -1,7 +1,6 @@
 import { getPermalink } from './utils/permalinks';
 
 const currentYear = new Date().getFullYear();
-const emailHref = 'mailto:info@szcomo.com';
 
 export const headerData = {
   links: [
@@ -26,7 +25,7 @@ export const headerData = {
       href: getPermalink('/contact'),
     },
   ],
-  actions: [{ text: 'Email', href: emailHref, title: 'Email info@szcomo.com' }],
+  actions: [],
 };
 
 export const footerData = {
@@ -63,7 +62,7 @@ export const footerData = {
     { text: 'Terms', href: getPermalink('/terms') },
     { text: 'Privacy Policy', href: getPermalink('/privacy') },
   ],
-  socialLinks: [{ ariaLabel: 'Email', icon: 'tabler:mail', href: emailHref }],
+  socialLinks: [],
   footNote: `
     &copy; ${currentYear} Como Precision - Suzhou Como Precision Materials Co., Ltd. - All rights reserved.
   `,
