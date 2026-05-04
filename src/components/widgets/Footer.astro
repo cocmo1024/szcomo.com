@@ -28,12 +28,12 @@ const { secondaryLinks = [], links = [], footNote = '', theme = 'light' } = Astr
 <footer class:list={[{ dark: theme === 'dark' }, 'relative not-prose']}>
   <div class="dark:bg-dark absolute inset-0 pointer-events-none" aria-hidden="true"></div>
   <div
-    class="relative mx-auto max-w-6xl px-4 py-10 text-slate-700 dark:text-slate-300 sm:px-6 lg:py-12 intersect-once intersect-quarter intersect-no-queue"
+    class="relative mx-auto max-w-6xl px-4 py-12 text-slate-700 dark:text-slate-300 sm:px-6 lg:py-14 intersect-once intersect-quarter intersect-no-queue"
   >
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,2fr)] lg:gap-14">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16">
       <div class="max-w-sm">
         <a
-          class="inline-block text-lg font-bold tracking-tight text-slate-900 dark:text-white"
+          class="inline-block text-lg font-semibold tracking-tight text-slate-900 dark:text-white"
           href={getHomePermalink()}>{SITE?.name}</a
         >
         <p class="mt-4 text-sm leading-6 text-muted dark:text-slate-400">
@@ -41,26 +41,25 @@ const { secondaryLinks = [], links = [], footNote = '', theme = 'light' } = Astr
           machining.
         </p>
         <a
-          class="mt-5 inline-flex text-sm font-medium text-slate-800 underline underline-offset-4 hover:text-primary dark:text-slate-200 dark:hover:text-cyan-200"
+          class="mt-5 inline-flex text-sm font-medium text-slate-800 transition hover:text-slate-950 dark:text-slate-200 dark:hover:text-white"
           href="mailto:info@szcomo.com"
           aria-label="Email project drawings and requirements to info@szcomo.com"
         >
           info@szcomo.com
         </a>
-        <div class="mt-5 flex flex-wrap gap-x-3 gap-y-2 text-sm text-muted">
-          {
-            secondaryLinks.map(({ text, href }, index) => (
-              <>
-                {index !== 0 ? <span class="text-slate-300 dark:text-slate-700">/</span> : ''}
+        {
+          secondaryLinks.length > 0 && (
+            <div class="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted">
+              {secondaryLinks.map(({ text, href }) => (
                 <a
-                  class="text-muted transition duration-150 ease-in-out hover:text-gray-700 hover:underline dark:text-gray-400"
+                  class="text-muted transition duration-150 ease-in-out hover:text-gray-700 dark:text-gray-500 dark:hover:text-slate-300"
                   href={href}
                   set:html={text}
                 />
-              </>
-            ))
-          }
-        </div>
+              ))}
+            </div>
+          )
+        }
       </div>
       <nav class="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4 lg:gap-x-10" aria-label="Footer navigation">
         {
@@ -72,7 +71,7 @@ const { secondaryLinks = [], links = [], footNote = '', theme = 'light' } = Astr
                   {links.map(({ text, href, ariaLabel }) => (
                     <li>
                       <a
-                        class="text-muted transition duration-150 ease-in-out hover:text-gray-700 hover:underline dark:text-gray-400 dark:hover:text-slate-200"
+                        class="text-muted transition duration-150 ease-in-out hover:text-gray-700 dark:text-gray-500 dark:hover:text-slate-200"
                         href={href}
                         aria-label={ariaLabel}
                       >
@@ -87,7 +86,7 @@ const { secondaryLinks = [], links = [], footNote = '', theme = 'light' } = Astr
         }
       </nav>
     </div>
-    <div class="mt-10 flex flex-col gap-4 text-sm sm:flex-row sm:items-center sm:justify-between">
+    <div class="mt-10 flex flex-col gap-4 text-xs sm:flex-row sm:items-center sm:justify-between">
       <div class="text-muted dark:text-slate-400">
         <Fragment set:html={footNote} />
       </div>

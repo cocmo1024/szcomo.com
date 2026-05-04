@@ -59,7 +59,7 @@ const hasDesktopActions = Boolean(showRssFeed || actions?.length);
   <div class="absolute inset-0"></div>
   <div
     class:list={[
-      'relative text-default py-3 px-4 sm:px-6 mx-auto w-full',
+      'relative text-default py-4 px-4 sm:px-6 mx-auto w-full md:py-3',
       {
         'md:flex md:justify-between': position !== 'center',
       },
@@ -81,11 +81,11 @@ const hasDesktopActions = Boolean(showRssFeed || actions?.length);
       </div>
     </div>
     <nav
-      class="items-center w-full md:w-auto hidden md:flex md:mx-3 text-default overflow-y-auto overflow-x-hidden md:overflow-y-visible md:overflow-x-auto md:justify-self-center"
+      class="hidden w-full items-center overflow-y-auto overflow-x-hidden text-default md:mx-3 md:flex md:w-auto md:justify-self-center md:overflow-y-visible md:overflow-x-auto"
       aria-label="Main navigation"
     >
       <ul
-        class="flex flex-col md:flex-row md:self-center w-full md:w-auto text-xl md:text-[0.9375rem] tracking-[0.01rem] font-medium md:justify-center"
+        class="flex w-full flex-col text-xl font-medium tracking-[0.01rem] text-slate-300 md:w-auto md:flex-row md:self-center md:justify-center md:text-sm"
       >
         {
           links.map(({ text, href, links }) => (
@@ -94,7 +94,7 @@ const hasDesktopActions = Boolean(showRssFeed || actions?.length);
                 <>
                   <button
                     type="button"
-                    class="hover:text-link dark:hover:text-white px-3 py-3 flex items-center whitespace-nowrap"
+                    class="flex items-center whitespace-nowrap px-3 py-3 transition hover:text-link dark:hover:text-white"
                   >
                     {text}{' '}
                     <Icon name="tabler:chevron-down" class="w-3.5 h-3.5 ml-0.5 rtl:ml-0 rtl:mr-0.5 hidden md:inline" />
@@ -118,7 +118,7 @@ const hasDesktopActions = Boolean(showRssFeed || actions?.length);
               ) : (
                 <a
                   class:list={[
-                    'hover:text-link dark:hover:text-white px-3 py-3 flex items-center whitespace-nowrap',
+                    'flex items-center whitespace-nowrap px-3 py-3 transition hover:text-link dark:hover:text-white',
                     { 'aw-link-active': href === currentPath },
                   ]}
                   href={href}

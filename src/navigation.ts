@@ -58,10 +58,7 @@ export const footerData = {
       ],
     },
   ],
-  secondaryLinks: [
-    { text: 'Terms', href: getPermalink('/terms') },
-    { text: 'Privacy Policy', href: getPermalink('/privacy') },
-  ],
+  secondaryLinks: [],
   socialLinks: [],
   footNote: `
     &copy; ${currentYear} Como Precision - Suzhou Como Precision Materials Co., Ltd. - All rights reserved.

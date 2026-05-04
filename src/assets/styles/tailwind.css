@@ -22,11 +22,11 @@
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center rounded-full border-gray-400 border bg-transparent font-medium text-center text-base text-page leading-snug transition py-3.5 px-6 md:px-8 ease-in duration-200 focus:ring-primary focus:ring-offset-[#dcecf4] focus:ring-2 focus:ring-offset-2 hover:bg-gray-100 hover:border-gray-600 dark:text-slate-300 dark:border-slate-500 dark:hover:bg-slate-800 dark:hover:border-slate-800 dark:focus:ring-offset-[#050607] cursor-pointer;
+    @apply inline-flex items-center justify-center rounded-full border border-slate-300 bg-transparent px-5 py-3 text-center text-sm font-semibold leading-snug text-page transition duration-200 ease-in hover:border-slate-600 hover:bg-slate-100 focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#dcecf4] dark:border-white/[0.18] dark:text-slate-100 dark:hover:border-white/[0.35] dark:hover:bg-white/[0.04] dark:focus:ring-white/[0.45] dark:focus:ring-offset-[#050607] md:px-6 cursor-pointer;
   }
 
   .btn-primary {
-    @apply btn font-semibold bg-primary text-white border-primary hover:bg-secondary hover:border-secondary hover:text-white dark:text-white dark:bg-primary dark:border-primary dark:hover:border-secondary dark:hover:bg-secondary;
+    @apply btn border-slate-950 bg-slate-950 text-white hover:border-slate-800 hover:bg-slate-800 hover:text-white dark:border-white dark:bg-white dark:text-[#050607] dark:hover:border-slate-200 dark:hover:bg-slate-200 dark:hover:text-[#050607];
   }
 
   .btn-secondary {
