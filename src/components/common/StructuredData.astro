@@ -1,0 +1,134 @@
+---
+import { I18N, METADATA, SITE } from 'astrowind:config';
+import appleTouchIcon from '~/assets/favicons/apple-touch-icon.png';
+import type { MetaData, JsonLdNode } from '~/types';
+import type { ImageMetadata } from 'astro';
+import { getCanonical } from '~/utils/permalinks';
+import { findImage } from '~/utils/images';
+import { toAbsoluteUrl } from '~/utils/structured-data';
+
+export interface Props {
+  metadata?: MetaData;
+}
+
+const { metadata = {} } = Astro.props;
+
+const siteUrl = String(SITE.site).replace(/\/$/, '');
+const canonical = metadata.canonical || String(getCanonical(String(Astro.url.pathname)));
+const pageTitle = metadata.title || METADATA?.title?.default || SITE.name;
+const pageDescription = metadata.description || METADATA?.description;
+const organizationId = `${siteUrl}/#organization`;
+const websiteId = `${siteUrl}/#website`;
+const logoUrl = String(new URL(appleTouchIcon.src, `${siteUrl}/`));
+const breadcrumbId = `${canonical}#breadcrumb`;
+const primaryImage = metadata.openGraph?.images?.[0] || METADATA?.openGraph?.images?.[0];
+const resolvedPrimaryImage = primaryImage?.url
+  ? ((await findImage(primaryImage.url)) as ImageMetadata | string | undefined)
+  : undefined;
+const primaryImageUrl =
+  typeof resolvedPrimaryImage === 'string'
+    ? toAbsoluteUrl(resolvedPrimaryImage)
+    : toAbsoluteUrl(resolvedPrimaryImage?.src);
+
+const normalizeStructuredData = (item: JsonLdNode): JsonLdNode => {
+  const node = { ...item };
+  delete node['@context'];
+  if (node['@type'] === 'BreadcrumbList' && !node['@id']) {
+    node['@id'] = breadcrumbId;
+  }
+  return node;
+};
+
+const pageStructuredData = metadata.structuredData
+  ? (Array.isArray(metadata.structuredData) ? metadata.structuredData : [metadata.structuredData]).map(
+      normalizeStructuredData
+    )
+  : [];
+
+const graph: JsonLdNode[] = [
+  {
+    '@type': 'Organization',
+    '@id': organizationId,
+    name: SITE.name,
+    legalName: 'Suzhou Como Precision Materials Co., Ltd.',
+    url: `${siteUrl}/`,
+    email: 'info@szcomo.com',
+    sameAs: [
+      'https://szcomo.com/',
+      'https://metal3dpowder.com/',
+      'https://titanium3dp.com/',
+      'https://copper3dp.com/',
+      'https://ceramiccnc.com/',
+    ],
+    logo: {
+      '@type': 'ImageObject',
+      url: logoUrl,
+      width: 180,
+      height: 180,
+    },
+    description: METADATA?.description,
+    knowsAbout: [
+      'Industrial 3D printing services',
+      'Metal additive manufacturing',
+      'Metal 3D printing powders',
+      'Titanium 3D printing',
+      'Copper 3D printing',
+      'SLS and MJF services',
+      'LPBF metal additive manufacturing',
+      'Rapid prototyping',
+      'Production additive manufacturing',
+      'Precision ceramic CNC machining',
+      'Technical ceramic machining',
+      'Finishing and quality assurance',
+    ],
+    contactPoint: [
+      {
+        '@type': 'ContactPoint',
+        contactType: 'sales',
+        email: 'info@szcomo.com',
+        availableLanguage: ['en', 'zh'],
+      },
+    ],
+  },
+  {
+    '@type': 'WebSite',
+    '@id': websiteId,
+    url: `${siteUrl}/`,
+    name: SITE.name,
+    description: METADATA?.description,
+    publisher: { '@id': organizationId },
+    inLanguage: I18N?.language || 'en',
+  },
+  {
+    '@type': 'WebPage',
+    '@id': `${canonical}#webpage`,
+    url: canonical,
+    name: pageTitle,
+    ...(pageDescription ? { description: pageDescription } : {}),
+    isPartOf: { '@id': websiteId },
+    about: { '@id': organizationId },
+    inLanguage: I18N?.language || 'en',
+    ...(pageStructuredData.some((item) => item['@type'] === 'BreadcrumbList')
+      ? { breadcrumb: { '@id': breadcrumbId } }
+      : {}),
+    ...(primaryImageUrl
+      ? {
+          primaryImageOfPage: {
+            '@type': 'ImageObject',
+            url: primaryImageUrl,
+            ...(primaryImage?.width ? { width: primaryImage.width } : {}),
+            ...(primaryImage?.height ? { height: primaryImage.height } : {}),
+          },
+        }
+      : {}),
+  },
+  ...pageStructuredData,
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': graph,
+};
+---
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

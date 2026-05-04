@@ -1,0 +1,34 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+
+import type { MetaData } from '~/types';
+import { createBreadcrumbSchema } from '~/utils/structured-data';
+
+export interface Props {
+  frontmatter: {
+    title?: string;
+    description?: string;
+    robots?: MetaData['robots'];
+  };
+}
+
+const { frontmatter } = Astro.props;
+
+const metadata: MetaData = {
+  title: frontmatter?.title,
+  description: frontmatter?.description,
+  robots: frontmatter?.robots,
+  structuredData: createBreadcrumbSchema([{ name: 'Home', item: '/' }, { name: frontmatter?.title || 'Page' }]),
+};
+---
+
+<Layout metadata={metadata}>
+  <article class="mx-auto max-w-3xl px-6 py-12 sm:px-6 sm:py-16 lg:py-20">
+    <div
+      class="prose prose-md max-w-none dark:prose-invert dark:prose-headings:text-slate-300 lg:prose-xl prose-a:text-primary dark:prose-a:text-cyan-300 prose-li:my-0"
+    >
+      <h1>{frontmatter.title}</h1>
+      <slot />
+    </div>
+  </article>
+</Layout>

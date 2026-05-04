@@ -1,0 +1,647 @@
+---
+import { UI } from 'astrowind:config';
+---
+
+<script is:inline data-default-theme={UI.theme || 'system'}>
+  (() => {
+    const defaultTheme = document.currentScript?.dataset.defaultTheme || 'system';
+
+    if (window.basic_script) {
+      return;
+    }
+
+    window.basic_script = true;
+
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+
+    function getLocalTheme() {
+      try {
+        return localStorage.theme || '';
+      } catch {
+        return '';
+      }
+    }
+
+    function hasLocalTheme() {
+      try {
+        return 'theme' in localStorage;
+      } catch {
+        return false;
+      }
+    }
+
+    function setLocalTheme(theme) {
+      try {
+        localStorage.theme = theme;
+      } catch {
+        // Ignore storage failures. The current page still reflects the selected theme.
+      }
+    }
+
+    const initTheme = function () {
+      const storedTheme = getLocalTheme();
+
+      if ((defaultTheme && defaultTheme.endsWith(':only')) || (!storedTheme && defaultTheme !== 'system')) {
+        applyTheme(defaultTheme.replace(':only', ''));
+      } else if (
+        storedTheme === 'dark' ||
+        (!hasLocalTheme() && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
+        applyTheme('dark');
+      } else {
+        applyTheme('light');
+      }
+    };
+    initTheme();
+
+    function attachEvent(selector, event, fn) {
+      const matches = typeof selector === 'string' ? document.querySelectorAll(selector) : selector;
+      if (matches && matches.length) {
+        matches.forEach((elem) => {
+          elem.addEventListener(event, (e) => fn(e, elem), false);
+        });
+      }
+    }
+
+    function readStoredAttribution() {
+      try {
+        return JSON.parse(sessionStorage.getItem('como_attribution') || '{}');
+      } catch {
+        return {};
+      }
+    }
+
+    function captureAttribution() {
+      const params = new URLSearchParams(window.location.search);
+      const keys = ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+      const attribution = readStoredAttribution();
+      let changed = false;
+
+      keys.forEach((key) => {
+        const value = params.get(key);
+        if (value && attribution[key] !== value) {
+          attribution[key] = value;
+          changed = true;
+        }
+      });
+
+      if (changed || !attribution.landing_page) {
+        attribution.landing_page = attribution.landing_page || window.location.href;
+        attribution.updated_at = new Date().toISOString();
+        try {
+          sessionStorage.setItem('como_attribution', JSON.stringify(attribution));
+        } catch {
+          // Attribution improves reporting but should never block the page.
+        }
+      }
+
+      return attribution;
+    }
+
+    function getAttributionFields() {
+      const attribution = readStoredAttribution();
+      return Object.fromEntries(Object.entries(attribution).filter(([, value]) => Boolean(value)));
+    }
+
+    function getTrackingPayload(elem, extra = {}) {
+      const attribution = getAttributionFields();
+      return {
+        page_location: window.location.href,
+        page_path: window.location.pathname,
+        page_title: document.title,
+        link_url: elem?.getAttribute?.('href') || '',
+        link_text: elem?.textContent?.trim().replace(/\s+/g, ' ') || '',
+        ...attribution,
+        ...extra,
+      };
+    }
+
+    function getPageType() {
+      const path = window.location.pathname;
+      if (path === '/') return 'home';
+      if (path.startsWith('/posts/')) return 'article';
+      if (path.startsWith('/category/') || path.startsWith('/tags/') || path.startsWith('/blog/tag/')) {
+        return 'resource_index';
+      }
+
+      return path.split('/').filter(Boolean)[0] || 'page';
+    }
+
+    function getPageTrackingPayload(extra = {}) {
+      return {
+        page_location: window.location.href,
+        page_path: window.location.pathname,
+        page_title: document.title,
+        page_type: getPageType(),
+        ...getAttributionFields(),
+        ...extra,
+      };
+    }
+
+    function isDuplicateConversion(key) {
+      if (!key) return false;
+
+      try {
+        const storageKey = `como_conversion_${key}`;
+        if (sessionStorage.getItem(storageKey) === 'true') {
+          return true;
+        }
+        sessionStorage.setItem(storageKey, 'true');
+      } catch {
+        return false;
+      }
+
+      return false;
+    }
+
+    function sendGoogleAdsConversionPixel(sendTo) {
+      const match = /^AW-(\d+)\/([^/?#]+)$/.exec(sendTo || '');
+      if (!match) return;
+
+      const tracking = window.COMO_TRACKING || {};
+      const conversionValue = Number(tracking.googleAdsConversionValue || 1.0) || 1.0;
+      const conversionCurrency = tracking.googleAdsConversionCurrency || 'CNY';
+      const url = new URL(`https://www.googleadservices.com/pagead/conversion/${match[1]}/`);
+      url.searchParams.set('label', match[2]);
+      url.searchParams.set('value', String(conversionValue));
+      url.searchParams.set('currency_code', conversionCurrency);
+      url.searchParams.set('guid', 'ON');
+      url.searchParams.set('script', '0');
+      url.searchParams.set('random', String(Date.now()));
+
+      const pixel = new Image(1, 1);
+      pixel.alt = '';
+      pixel.referrerPolicy = 'no-referrer-when-downgrade';
+      pixel.src = url.toString();
+      window.comoAdsConversionPixels = window.comoAdsConversionPixels || [];
+      window.comoAdsConversionPixels.push(pixel);
+    }
+
+    function sendGoogleAdsConversionScript(sendTo) {
+      const match = /^AW-(\d+)\/([^/?#]+)$/.exec(sendTo || '');
+      if (!match) return;
+
+      const tracking = window.COMO_TRACKING || {};
+      const conversionValue = Number(tracking.googleAdsConversionValue || 1.0) || 1.0;
+      const conversionCurrency = tracking.googleAdsConversionCurrency || 'CNY';
+      window.google_conversion_id = Number(match[1]);
+      window.google_conversion_label = match[2];
+      window.google_conversion_value = conversionValue;
+      window.google_conversion_currency = conversionCurrency;
+      window.google_remarketing_only = false;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googleadservices.com/pagead/conversion.js';
+      script.onerror = function () {
+        sendGoogleAdsConversionPixel(sendTo);
+      };
+      document.body.appendChild(script);
+    }
+
+    function trackComoEvent(eventName, payload = {}, options = {}) {
+      const isDuplicate = isDuplicateConversion(options.conversionKey);
+      const tracking = window.COMO_TRACKING || {};
+      const sendTo = tracking.googleAdsLeadSendTo || tracking.googleAdsProjectSendTo;
+      const conversionValue = Number(tracking.googleAdsConversionValue || 1.0) || 1.0;
+      const conversionCurrency = tracking.googleAdsConversionCurrency || 'CNY';
+      const leadMethod = payload.method || options.method || 'project';
+
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: eventName, ...payload });
+
+      if (options.generateLead && !isDuplicate) {
+        window.dataLayer.push({ event: 'generate_lead', ...payload });
+      }
+
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', eventName, { transport_type: 'beacon', ...payload });
+
+        if (options.generateLead && !isDuplicate) {
+          window.gtag('event', 'generate_lead', { method: leadMethod, transport_type: 'beacon', ...payload });
+        }
+
+        if (options.adsConversion && sendTo && !isDuplicate) {
+          const conversionPayload = {
+            send_to: sendTo,
+            value: conversionValue,
+            currency: conversionCurrency,
+            transport_type: 'beacon',
+            event_category: 'lead',
+            event_label: payload.link_text || 'Project email',
+          };
+
+          if (typeof options.eventCallback === 'function') {
+            conversionPayload.event_callback = options.eventCallback;
+            conversionPayload.event_timeout = options.eventTimeout || 1000;
+          }
+
+          window.gtag('event', 'conversion', conversionPayload);
+        }
+      }
+
+      if (options.adsConversion && sendTo && !isDuplicate) {
+        sendGoogleAdsConversionScript(sendTo);
+      }
+    }
+
+    function trackPageViewContext() {
+      const currentUrl = window.location.href;
+      if (window.COMO_LAST_TRACKED_PAGE_VIEW === currentUrl) return;
+
+      window.COMO_LAST_TRACKED_PAGE_VIEW = currentUrl;
+      trackComoEvent(
+        'como_page_view',
+        getPageTrackingPayload({
+          event_category: 'page',
+        })
+      );
+    }
+
+    function showEmailToast(message) {
+      let toast = document.getElementById('email-copy-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'email-copy-toast';
+        toast.setAttribute('role', 'status');
+        toast.style.cssText =
+          'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;background:#111418;color:#f2f4f3;border:1px solid rgba(126,200,227,.28);border-radius:8px;padding:10px 14px;font:600 14px/1.3 system-ui,-apple-system,Segoe UI,sans-serif;box-shadow:0 12px 30px rgba(5,6,7,.28);opacity:0;transition:opacity .18s ease;';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = message;
+      toast.style.opacity = '1';
+      clearTimeout(window.emailCopyToastTimer);
+      window.emailCopyToastTimer = setTimeout(() => {
+        toast.style.opacity = '0';
+      }, 2200);
+    }
+
+    function normalizeMailtoHref(elem) {
+      const originalHref = elem.dataset.awOriginalHref || elem.getAttribute('href') || '';
+      elem.dataset.awOriginalHref = originalHref;
+      const match = originalHref.match(/^mailto:([^?]+)/);
+      const email = match ? decodeURIComponent(match[1]).trim() : '';
+
+      if (!email) return { href: originalHref, email: '' };
+
+      const href = `mailto:${email}`;
+      elem.setAttribute('href', href);
+
+      return { href, email };
+    }
+
+    const onLoad = function () {
+      captureAttribution();
+      trackPageViewContext();
+
+      let lastKnownScrollPosition = window.scrollY;
+      let ticking = true;
+
+      attachEvent('#header nav', 'click', function () {
+        document.querySelector('[data-aw-toggle-menu]')?.classList.remove('expanded');
+        document.body.classList.remove('overflow-hidden');
+        document.getElementById('header')?.classList.remove('h-screen');
+        document.getElementById('header')?.classList.remove('expanded');
+        document.getElementById('header')?.classList.remove('bg-page');
+        document.querySelector('#header nav')?.classList.add('hidden');
+        document.querySelector('#header > div > div:last-child')?.classList.add('hidden');
+      });
+
+      attachEvent('[data-aw-toggle-menu]', 'click', function (_, elem) {
+        elem.classList.toggle('expanded');
+        document.body.classList.toggle('overflow-hidden');
+        document.getElementById('header')?.classList.toggle('h-screen');
+        document.getElementById('header')?.classList.toggle('expanded');
+        document.getElementById('header')?.classList.toggle('bg-page');
+        document.querySelector('#header nav')?.classList.toggle('hidden');
+        document.querySelector('#header > div > div:last-child')?.classList.toggle('hidden');
+      });
+
+      attachEvent('[data-aw-toggle-color-scheme]', 'click', function () {
+        if (defaultTheme.endsWith(':only')) {
+          return;
+        }
+
+        Observer.removeAnimationDelay();
+
+        document.documentElement.classList.toggle('dark');
+        setLocalTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+      });
+
+      attachEvent('[data-aw-social-share]', 'click', function (_, elem) {
+        const network = elem.getAttribute('data-aw-social-share');
+        const url = encodeURIComponent(elem.getAttribute('data-aw-url'));
+        const text = encodeURIComponent(elem.getAttribute('data-aw-text'));
+
+        let href;
+        switch (network) {
+          case 'facebook':
+            href = `https://www.facebook.com/sharer.php?u=${url}`;
+            break;
+          case 'twitter':
+            href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+            break;
+          case 'linkedin':
+            href = `https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${text}`;
+            break;
+          case 'whatsapp':
+            href = `https://wa.me/?text=${text}%20${url}`;
+            break;
+          case 'mail':
+            href = `mailto:?subject=%22${text}%22&body=${text}%20${url}`;
+            break;
+
+          default:
+            return;
+        }
+
+        const newlink = document.createElement('a');
+        newlink.target = '_blank';
+        newlink.rel = 'noopener noreferrer';
+        newlink.href = href;
+        newlink.click();
+      });
+
+      document.querySelectorAll('a[href^="mailto:"]').forEach((elem) => {
+        normalizeMailtoHref(elem);
+        if (elem.dataset.awEmailCopy === 'true') return;
+        elem.dataset.awEmailCopy = 'true';
+
+        elem.addEventListener(
+          'click',
+          function (event) {
+            const { href, email } = normalizeMailtoHref(elem);
+            if (!email) return;
+
+            event.preventDefault();
+            let mailtoOpened = false;
+            const openMailto = function () {
+              if (mailtoOpened) return;
+              mailtoOpened = true;
+              window.location.href = href;
+            };
+            const mailtoTimer = window.setTimeout(openMailto, 900);
+
+            trackComoEvent(
+              'project_email_click',
+              getTrackingPayload(elem, {
+                email,
+                method: 'email',
+                event_category: 'lead',
+              }),
+              {
+                generateLead: true,
+                adsConversion: true,
+                conversionKey: 'project_email',
+                eventCallback: function () {
+                  window.clearTimeout(mailtoTimer);
+                  openMailto();
+                },
+                eventTimeout: 900,
+              }
+            );
+
+            if (navigator.clipboard?.writeText) {
+              navigator.clipboard
+                .writeText(email)
+                .then(() => {
+                  trackComoEvent(
+                    'project_email_copy',
+                    getTrackingPayload(elem, {
+                      email,
+                      method: 'email_copy',
+                      event_category: 'lead',
+                    })
+                  );
+                  showEmailToast(`Email copied: ${email}`);
+                })
+                .catch(() => showEmailToast(`Email: ${email}`));
+            } else {
+              showEmailToast(`Email: ${email}`);
+            }
+          },
+          false
+        );
+      });
+
+      document.querySelectorAll('[data-aw-instant-contact-link]').forEach((elem) => {
+        if (elem.dataset.awInstantContactTrack === 'true') return;
+        elem.dataset.awInstantContactTrack = 'true';
+        elem.addEventListener(
+          'click',
+          function () {
+            const channel = elem.getAttribute('data-aw-contact-channel') || 'instant_contact';
+            trackComoEvent(
+              'instant_contact_click',
+              getTrackingPayload(elem, {
+                method: channel,
+                event_category: 'lead',
+              }),
+              {
+                generateLead: true,
+                adsConversion: true,
+                conversionKey: `instant_contact_${channel}`,
+              }
+            );
+          },
+          false
+        );
+      });
+
+      document.querySelectorAll('a[href^="http"]').forEach((elem) => {
+        let linkUrl;
+        try {
+          linkUrl = new URL(elem.href, window.location.href);
+        } catch {
+          return;
+        }
+
+        if (linkUrl.origin === window.location.origin || elem.dataset.awOutboundTrack === 'true') return;
+
+        elem.dataset.awOutboundTrack = 'true';
+        elem.addEventListener(
+          'click',
+          function () {
+            trackComoEvent(
+              'outbound_link_click',
+              getTrackingPayload(elem, {
+                event_category: 'engagement',
+                outbound_domain: linkUrl.hostname,
+              })
+            );
+          },
+          false
+        );
+      });
+
+      const screenSize = window.matchMedia('(max-width: 767px)');
+      screenSize.addEventListener('change', function () {
+        document.querySelector('[data-aw-toggle-menu]')?.classList.remove('expanded');
+        document.body.classList.remove('overflow-hidden');
+        document.getElementById('header')?.classList.remove('h-screen');
+        document.getElementById('header')?.classList.remove('expanded');
+        document.getElementById('header')?.classList.remove('bg-page');
+        document.querySelector('#header nav')?.classList.add('hidden');
+        document.querySelector('#header > div > div:last-child')?.classList.add('hidden');
+      });
+
+      function applyHeaderStylesOnScroll() {
+        const header = document.querySelector('#header[data-aw-sticky-header]');
+        if (!header) return;
+        if (lastKnownScrollPosition > 60 && !header.classList.contains('scroll')) {
+          header.classList.add('scroll');
+        } else if (lastKnownScrollPosition <= 60 && header.classList.contains('scroll')) {
+          header.classList.remove('scroll');
+        }
+        ticking = false;
+      }
+      applyHeaderStylesOnScroll();
+
+      attachEvent([document], 'scroll', function () {
+        lastKnownScrollPosition = window.scrollY;
+
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            applyHeaderStylesOnScroll();
+          });
+          ticking = true;
+        }
+      });
+    };
+    const onPageShow = function () {
+      document.documentElement.classList.add('motion-safe:scroll-smooth');
+      const elem = document.querySelector('[data-aw-toggle-menu]');
+      if (elem) {
+        elem.classList.remove('expanded');
+      }
+      document.body.classList.remove('overflow-hidden');
+      document.getElementById('header')?.classList.remove('h-screen');
+      document.getElementById('header')?.classList.remove('expanded');
+      document.querySelector('#header nav')?.classList.add('hidden');
+    };
+
+    window.onload = onLoad;
+    window.onpageshow = onPageShow;
+
+    document.addEventListener('astro:after-swap', () => {
+      initTheme();
+      onLoad();
+      onPageShow();
+    });
+  })();
+</script>
+
+<script is:inline>
+  /* Inspired by: https://github.com/heidkaemper/tailwindcss-intersect */
+  const Observer = {
+    observer: null,
+    delayBetweenAnimations: 100,
+    animationCounter: 0,
+    elements: null,
+
+    start() {
+      const selectors = [
+        '[class*=" intersect:"]',
+        '[class*=":intersect:"]',
+        '[class^="intersect:"]',
+        '[class="intersect"]',
+        '[class*=" intersect "]',
+        '[class^="intersect "]',
+        '[class$=" intersect"]',
+      ];
+
+      this.elements = Array.from(document.querySelectorAll(selectors.join(',')));
+
+      const getThreshold = (element) => {
+        if (element.classList.contains('intersect-full')) return 0.99;
+        if (element.classList.contains('intersect-half')) return 0.5;
+        if (element.classList.contains('intersect-quarter')) return 0.25;
+        return 0;
+      };
+
+      this.elements.forEach((el) => {
+        el.setAttribute('no-intersect', '');
+        el._intersectionThreshold = getThreshold(el);
+      });
+
+      const callback = (entries) => {
+        entries.forEach((entry) => {
+          requestAnimationFrame(() => {
+            const target = entry.target;
+            const intersectionRatio = entry.intersectionRatio;
+            const threshold = target._intersectionThreshold;
+
+            if (target.classList.contains('intersect-no-queue')) {
+              if (entry.isIntersecting) {
+                target.removeAttribute('no-intersect');
+                if (target.classList.contains('intersect-once')) {
+                  this.observer.unobserve(target);
+                }
+              } else {
+                target.setAttribute('no-intersect', '');
+              }
+              return;
+            }
+
+            if (intersectionRatio >= threshold) {
+              if (!target.hasAttribute('data-animated')) {
+                target.removeAttribute('no-intersect');
+                target.setAttribute('data-animated', 'true');
+
+                const delay = this.animationCounter * this.delayBetweenAnimations;
+                this.animationCounter++;
+
+                target.style.transitionDelay = `${delay}ms`;
+                target.style.animationDelay = `${delay}ms`;
+
+                if (target.classList.contains('intersect-once')) {
+                  this.observer.unobserve(target);
+                }
+              }
+            } else {
+              target.setAttribute('no-intersect', '');
+              target.removeAttribute('data-animated');
+              target.style.transitionDelay = '';
+              target.style.animationDelay = '';
+
+              this.animationCounter = 0;
+            }
+          });
+        });
+      };
+
+      this.observer = new IntersectionObserver(callback.bind(this), { threshold: [0, 0.25, 0.5, 0.99] });
+
+      this.elements.forEach((el) => {
+        this.observer.observe(el);
+      });
+    },
+
+    /* 
+      REF: #643;
+      We need to remove the delay to fix flickering/delay
+      when toggling the theme. Observer only removes them
+      after data-animated is gone (out of view).
+    */
+    removeAnimationDelay() {
+      this.elements.forEach((el) => {
+        if (el.getAttribute('data-animated') === 'true') {
+          el.style.transitionDelay = '';
+          el.style.animationDelay = '';
+        }
+      });
+    },
+  };
+
+  Observer.start();
+
+  document.addEventListener('astro:after-swap', () => {
+    Observer.start();
+  });
+</script>

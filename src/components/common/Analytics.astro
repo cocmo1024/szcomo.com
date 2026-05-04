@@ -1,0 +1,90 @@
+---
+import { ANALYTICS } from 'astrowind:config';
+
+const configuredAnalyticsId = ANALYTICS?.vendors?.googleAnalytics?.id
+  ? String(ANALYTICS.vendors.googleAnalytics.id)
+  : '';
+const defaultGoogleAdsConversionId = '';
+const defaultGoogleAdsProjectConversionLabel = '';
+const defaultGoogleAdsConversionValue = '1.0';
+const defaultGoogleAdsConversionCurrency = 'CNY';
+const googleTagManagerId = import.meta.env.PUBLIC_GOOGLE_TAG_MANAGER_ID || import.meta.env.PUBLIC_GTM_ID || '';
+const rawGoogleAnalyticsId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || configuredAnalyticsId;
+const googleAnalyticsId = rawGoogleAnalyticsId || '';
+const googleAdsConversionId = import.meta.env.PUBLIC_GOOGLE_ADS_CONVERSION_ID || defaultGoogleAdsConversionId;
+const googleTagId = import.meta.env.PUBLIC_GOOGLE_TAG_ID || googleAdsConversionId || googleAnalyticsId;
+const googleAdsLeadConversionLabel =
+  import.meta.env.PUBLIC_GOOGLE_ADS_LEAD_CONVERSION_LABEL ||
+  import.meta.env.PUBLIC_GOOGLE_ADS_PROJECT_CONVERSION_LABEL ||
+  import.meta.env.PUBLIC_GOOGLE_ADS_CONVERSION_LABEL ||
+  defaultGoogleAdsProjectConversionLabel;
+const googleAdsLeadSendTo =
+  googleAdsConversionId && googleAdsLeadConversionLabel
+    ? `${googleAdsConversionId}/${googleAdsLeadConversionLabel}`
+    : '';
+const googleAdsConversionValue = import.meta.env.PUBLIC_GOOGLE_ADS_CONVERSION_VALUE || defaultGoogleAdsConversionValue;
+const googleAdsConversionCurrency =
+  import.meta.env.PUBLIC_GOOGLE_ADS_CONVERSION_CURRENCY || defaultGoogleAdsConversionCurrency;
+const tagIds = Array.from(new Set([googleTagId, googleAnalyticsId, googleAdsConversionId].filter(Boolean)));
+const primaryTagId = tagIds[0];
+const googleTagSrc = primaryTagId ? `https://www.googletagmanager.com/gtag/js?id=${primaryTagId}` : '';
+const googleTagManagerSrc = googleTagManagerId
+  ? `https://www.googletagmanager.com/gtm.js?id=${googleTagManagerId}`
+  : '';
+---
+
+<script
+  is:inline
+  data-google-ads-lead-send-to={googleAdsLeadSendTo}
+  data-google-ads-project-send-to={googleAdsLeadSendTo}
+  data-google-ads-conversion-value={googleAdsConversionValue}
+  data-google-ads-conversion-currency={googleAdsConversionCurrency}
+  data-google-analytics-id={googleAnalyticsId}
+  data-google-ads-conversion-id={googleAdsConversionId}
+  data-google-tag-manager-id={googleTagManagerId}
+>
+  const trackingConfig = document.currentScript?.dataset || {};
+  window.dataLayer = window.dataLayer || [];
+  window.COMO_TRACKING = {
+    googleAnalyticsId: trackingConfig.googleAnalyticsId || '',
+    googleAdsConversionId: trackingConfig.googleAdsConversionId || '',
+    googleAdsLeadSendTo: trackingConfig.googleAdsLeadSendTo || trackingConfig.googleAdsProjectSendTo || '',
+    googleAdsProjectSendTo: trackingConfig.googleAdsProjectSendTo || trackingConfig.googleAdsLeadSendTo || '',
+    googleAdsConversionValue: Number(trackingConfig.googleAdsConversionValue || '1') || 1,
+    googleAdsConversionCurrency: trackingConfig.googleAdsConversionCurrency || 'CNY',
+    googleTagManagerId: trackingConfig.googleTagManagerId || '',
+  };
+</script>
+
+<script is:inline data-google-tag-manager-src={googleTagManagerSrc}>
+  const googleTagManagerSrc = document.currentScript?.dataset.googleTagManagerSrc || '';
+
+  if (googleTagManagerSrc) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+
+    const gtmScript = document.createElement('script');
+    gtmScript.async = true;
+    gtmScript.src = googleTagManagerSrc;
+    const firstScript = document.getElementsByTagName('script')[0];
+    firstScript.parentNode.insertBefore(gtmScript, firstScript);
+  }
+</script>
+
+{primaryTagId ? <script is:inline async src={googleTagSrc} /> : null}
+
+<script is:inline data-tag-ids={tagIds.join(',')} data-primary-tag-id={primaryTagId}>
+  const googleTagConfig = document.currentScript?.dataset || {};
+  const primaryTagId = googleTagConfig.primaryTagId || '';
+  const tagIds = (googleTagConfig.tagIds || '').split(',').filter(Boolean);
+
+  if (primaryTagId) {
+    window.dataLayer = window.dataLayer || [];
+    function gtag(...args) {
+      dataLayer.push(args);
+    }
+    window.gtag = window.gtag || gtag;
+    gtag('js', new Date());
+    tagIds.forEach((id) => gtag('config', id));
+  }
+</script>

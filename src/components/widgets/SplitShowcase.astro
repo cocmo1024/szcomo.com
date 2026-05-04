@@ -1,0 +1,127 @@
+---
+import type { CallToAction } from '~/types';
+import Headline from '~/components/ui/Headline.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import Image from '~/components/common/Image.astro';
+import ItemGrid from '~/components/ui/ItemGrid.astro';
+
+type ImagePosition = 'left' | 'right';
+
+interface ShowcaseImage {
+  src: string;
+  alt: string;
+}
+
+interface ShowcasePoint {
+  title: string;
+  description?: string;
+  callToAction?: CallToAction;
+}
+
+interface ShowcaseItem {
+  id?: string;
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  image?: ShowcaseImage;
+  imagePosition?: ImagePosition;
+  points?: ShowcasePoint[];
+}
+
+interface Props {
+  id?: string;
+  title?: string;
+  subtitle?: string;
+  tagline?: string;
+  items?: ShowcaseItem[];
+  isDark?: boolean;
+  classes?: {
+    container?: string;
+  };
+  bg?: string;
+}
+
+const {
+  id,
+  title,
+  subtitle,
+  tagline,
+  items = [],
+  isDark = false,
+  classes = {},
+  bg = await Astro.slots.render('bg'),
+} = Astro.props;
+---
+
+<WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-5xl mx-auto ${classes?.container ?? ''}`} bg={bg}>
+  {
+    (title || subtitle || tagline) && (
+      <Headline
+        title={title}
+        subtitle={subtitle}
+        tagline={tagline}
+        classes={{
+          container: 'max-w-xl sm:mx-auto lg:max-w-2xl',
+          title: 'text-4xl md:text-5xl font-bold tracking-tighter mb-4 font-heading',
+          subtitle: 'max-w-3xl mx-auto sm:text-center text-xl text-muted dark:text-slate-400',
+        }}
+      />
+    )
+  }
+
+  <div class="space-y-12 md:space-y-14 lg:space-y-16">
+    {
+      items.map(
+        ({ id: itemId, eyebrow, title: itemTitle, description, image, imagePosition = 'left', points = [] }) => (
+          <section id={itemId} class="space-y-8">
+            {(eyebrow || itemTitle || description) && (
+              <div class="rounded-lg border border-[#ffffff29] bg-white px-5 py-4 shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur dark:bg-slate-900 dark:shadow-[0_4px_30px_rgba(0,0,0,0.1)] md:px-6">
+                {eyebrow && <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-primary">{eyebrow}</p>}
+                {itemTitle && <h3 class="text-xl font-bold tracking-tight dark:text-white md:text-2xl">{itemTitle}</h3>}
+                {description && (
+                  <p
+                    class="mt-1 max-w-3xl text-sm leading-6 text-muted dark:text-slate-300 md:text-base"
+                    set:html={description}
+                  />
+                )}
+              </div>
+            )}
+
+            <div class="grid gap-10 md:grid-cols-2 md:gap-16">
+              <div class:list={['self-center', imagePosition === 'left' ? 'md:order-2' : 'md:order-1']}>
+                <ItemGrid
+                  items={points}
+                  defaultIcon="tabler:check"
+                  classes={{
+                    container: 'gap-y-4',
+                    panel: 'max-w-none',
+                    title: 'text-base font-semibold leading-6 dark:text-white ml-2 rtl:ml-0 rtl:mr-2',
+                    description: 'mt-1 text-sm leading-5 text-muted dark:text-slate-400 ml-2 rtl:ml-0 rtl:mr-2',
+                    icon: 'flex h-6 w-6 items-center justify-center rounded-full bg-green-600 dark:bg-green-700 text-gray-50 p-1',
+                    action: 'mt-1 text-base font-semibold leading-6 dark:text-white ml-2 rtl:ml-0 rtl:mr-2',
+                  }}
+                />
+              </div>
+
+              {image && (
+                <div class:list={['self-center', imagePosition === 'left' ? 'md:order-1' : 'md:order-2']}>
+                  <div class="relative m-auto">
+                    <Image
+                      class="mx-auto w-full rounded-lg bg-gray-500 shadow-lg"
+                      width={500}
+                      height={500}
+                      widths={[400, 768]}
+                      sizes="(max-width: 768px) 100vw, 432px"
+                      layout="responsive"
+                      {...image}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        )
+      )
+    }
+  </div>
+</WidgetWrapper>

@@ -1,0 +1,69 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "ceramiccnc.com" }],
+      "destination": "https://www.ceramiccnc.com/:path*",
+      "permanent": true
+    },
+    { "source": "/FAQ/", "destination": "/faq/", "permanent": true },
+    { "source": "/FAQ", "destination": "/faq/", "permanent": true },
+    { "source": "/Contact/", "destination": "/contact/", "permanent": true },
+    { "source": "/Contact", "destination": "/contact/", "permanent": true },
+    { "source": "/Terms/", "destination": "/terms/", "permanent": true },
+    { "source": "/Terms", "destination": "/terms/", "permanent": true },
+    { "source": "/Termst/", "destination": "/terms/", "permanent": true },
+    { "source": "/Termst", "destination": "/terms/", "permanent": true },
+    { "source": "/termst/", "destination": "/terms/", "permanent": true },
+    { "source": "/termst", "destination": "/terms/", "permanent": true },
+    { "source": "/category/EngineeringGuide/", "destination": "/category/engineering-guide/", "permanent": true },
+    { "source": "/category/EngineeringGuide", "destination": "/category/engineering-guide/", "permanent": true },
+    { "source": "/sitemap.xml", "destination": "/sitemap-index.xml", "permanent": true },
+    {
+      "source": "/copper-cold-plates/",
+      "destination": "/applications/#ceramic-sealing-faces-valve-seats",
+      "permanent": true
+    },
+    {
+      "source": "/copper-cold-plates",
+      "destination": "/applications/#ceramic-sealing-faces-valve-seats",
+      "permanent": true
+    },
+    {
+      "source": "/copper-heat-sinks/",
+      "destination": "/applications/#thermal-barrier-heat-resistant-fixtures",
+      "permanent": true
+    },
+    {
+      "source": "/copper-heat-sinks",
+      "destination": "/applications/#thermal-barrier-heat-resistant-fixtures",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        },
+        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains; preload" }
+      ]
+    },
+    {
+      "source": "/_astro/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}

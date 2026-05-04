@@ -1,0 +1,69 @@
+site:
+  name: Como Precision
+  site: 'https://szcomo.com'
+  base: '/'
+  trailingSlash: true
+
+  googleSiteVerificationId: false
+
+metadata:
+  title:
+    default: Como Precision | Metal Additive Manufacturing & Precision Ceramics
+    template: '%s | Como Precision'
+  description: 'Como Precision provides industrial 3D printing, titanium and copper additive manufacturing, metal powder supply, and precision ceramic machining for prototypes and production parts.'
+  robots:
+    index: true
+    follow: true
+  openGraph:
+    site_name: Como Precision
+    images:
+      - url: '~/assets/images/como/og-como.webp'
+        width: 1200
+        height: 630
+    type: website
+  twitter:
+    cardType: summary_large_image
+
+i18n:
+  language: en
+  textDirection: ltr
+
+apps:
+  blog:
+    isEnabled: false
+    postsPerPage: 6
+
+    post:
+      isEnabled: false
+      permalink: '/posts/%slug%'
+      robots:
+        index: false
+
+    list:
+      isEnabled: false
+      pathname: 'category/engineering-guide'
+      robots:
+        index: false
+
+    category:
+      isEnabled: false
+      pathname: 'blog/category'
+      robots:
+        index: false
+
+    tag:
+      isEnabled: true
+      pathname: 'blog/tag'
+      robots:
+        index: false
+
+    isRelatedPostsEnabled: false
+    relatedPostsCount: 4
+
+analytics:
+  vendors:
+    googleAnalytics:
+      id: false
+
+ui:
+  theme: 'system'

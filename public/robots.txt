@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://szcomo.com/sitemap-index.xml

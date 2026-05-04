@@ -1,0 +1,242 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import heroComo from '~/assets/images/como/hero-como-cutout.webp';
+import {
+  createBreadcrumbSchema,
+  createComoServiceSchema,
+  createFAQPageSchema,
+  createItemListSchema,
+} from '~/utils/structured-data';
+
+const email = 'info@szcomo.com';
+const emailHref = `mailto:${email}`;
+
+const serviceLinks = [
+  {
+    label: 'Metal powders',
+    title: 'Spherical metal powders',
+    href: 'https://metal3dpowder.com/',
+    description: 'Powder supply and application guidance for additive manufacturing programs.',
+  },
+  {
+    label: 'Titanium',
+    title: 'Titanium 3D printing',
+    href: 'https://titanium3dp.com/',
+    description: 'Titanium alloy additive manufacturing for lightweight industrial components.',
+  },
+  {
+    label: 'Copper',
+    title: 'Copper 3D printing',
+    href: 'https://copper3dp.com/',
+    description: 'Copper AM for thermal, electrical, and flow-focused functional parts.',
+  },
+  {
+    label: 'Ceramics',
+    title: 'Precision ceramic machining',
+    href: 'https://ceramiccnc.com/',
+    description: 'Advanced technical ceramics, machining review, finishing, and inspection planning.',
+  },
+];
+
+const capabilityGroups = [
+  {
+    title: 'Materials',
+    items: ['Titanium alloys', 'Copper alloys', 'Advanced ceramics', 'Metal AM powders'],
+  },
+  {
+    title: 'Processes',
+    items: ['LPBF metal AM', 'SLS and MJF networks', 'Precision ceramic machining', 'Finishing and QA support'],
+  },
+  {
+    title: 'Applications',
+    items: [
+      'Thermal management',
+      'Aerospace and mobility',
+      'Semiconductor hardware',
+      'Industrial prototypes and production',
+    ],
+  },
+];
+
+const faqItems = [
+  {
+    title: 'What does Como Precision provide?',
+    description:
+      'Como Precision connects industrial 3D printing, metal powder supply, titanium and copper additive manufacturing, and precision ceramic machining under one engineering-focused company website.',
+  },
+  {
+    title: 'How should a project inquiry be sent?',
+    description:
+      'Send drawings, CAD files, material requirements, quantity, target lead time, and critical performance or inspection requirements to info@szcomo.com.',
+  },
+  {
+    title: 'Which service site should I use for technical details?',
+    description:
+      'Use the linked dedicated sites for powders, titanium AM, copper AM, and ceramic machining when you need deeper material, process, or project guidance.',
+  },
+];
+
+const metadata = {
+  title: 'Como Precision | Metal Additive Manufacturing & Precision Ceramics',
+  ignoreTitleTemplate: true,
+  description:
+    'Como Precision provides industrial 3D printing, titanium and copper additive manufacturing, metal powder supply, and precision ceramic machining for prototypes and production parts.',
+  openGraph: {
+    images: [
+      {
+        url: '~/assets/images/como/og-como.webp',
+        width: 1200,
+        height: 630,
+        alt: 'Como Precision metal additive manufacturing and precision ceramics',
+      },
+    ],
+    type: 'website',
+  },
+  twitter: {
+    cardType: 'summary_large_image',
+  },
+  structuredData: [
+    createBreadcrumbSchema([{ name: 'Home', item: '/' }]),
+    createComoServiceSchema(),
+    createItemListSchema(
+      'Como Precision service platforms',
+      serviceLinks.map((item) => ({
+        name: item.title,
+        description: item.description,
+        url: item.href,
+      }))
+    ),
+    createFAQPageSchema(faqItems),
+  ],
+};
+---
+
+<Layout metadata={metadata}>
+  <section class="relative isolate overflow-hidden border-b border-slate-200/80 dark:border-slate-800">
+    <div class="absolute inset-0 -z-10 bg-[#f7f8f6] dark:bg-[#050607]"></div>
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <div class="grid min-h-[calc(82svh-4rem)] items-center gap-3 py-7 md:gap-8 md:py-12 lg:grid-cols-[0.92fr_1.08fr]">
+        <div class="max-w-2xl">
+          <p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">
+            Como Precision
+          </p>
+          <h1
+            class="mt-5 text-[2.35rem] font-bold leading-[1.02] tracking-normal text-slate-950 dark:text-white sm:text-5xl md:text-7xl md:leading-[0.98]"
+          >
+            Metal additive manufacturing & precision ceramics machining
+          </h1>
+          <p
+            class="mt-5 max-w-xl text-base leading-7 text-slate-600 dark:text-slate-300 md:mt-6 md:text-lg md:leading-8"
+          >
+            Titanium, copper, advanced technical ceramics, and metal powders for industrial prototypes, functional
+            parts, and production programs.
+          </p>
+          <div class="mt-6 flex flex-wrap items-center gap-3 md:mt-8">
+            <a class="btn-primary" href={emailHref}>Contact Como</a>
+            <a class="btn-secondary" href="#services">View services</a>
+          </div>
+        </div>
+
+        <div
+          class="relative flex min-h-[130px] items-center justify-center md:min-h-[300px] lg:min-h-[520px] lg:justify-end"
+        >
+          <img
+            src={heroComo.src}
+            width={heroComo.width}
+            height={heroComo.height}
+            alt="Industrial metal additive manufacturing parts, copper components, and precision ceramic parts"
+            class="h-auto max-h-[12svh] w-full max-w-[720px] object-contain drop-shadow-[0_28px_50px_rgba(15,23,42,0.20)] dark:drop-shadow-[0_30px_58px_rgba(255,255,255,0.12)] sm:max-h-[36svh] md:max-h-[46svh] lg:-mr-8 lg:max-h-[64vh] lg:max-w-[860px] lg:scale-110 xl:-mr-14"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="border-b border-slate-200/80 py-10 dark:border-slate-800 md:py-12">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <div class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">
+            Service map
+          </p>
+          <h2 class="mt-3 text-3xl font-semibold tracking-normal text-slate-950 dark:text-white md:text-4xl">
+            One company, focused technical platforms.
+          </h2>
+        </div>
+        <div class="divide-y divide-slate-200 border-y border-slate-200 dark:divide-slate-800 dark:border-slate-800">
+          {
+            serviceLinks.map((item) => (
+              <a
+                class="group grid gap-3 py-5 text-slate-900 transition hover:text-primary dark:text-slate-100 dark:hover:text-cyan-200 sm:grid-cols-[10rem_1fr_auto] sm:items-center"
+                href={item.href}
+              >
+                <span class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-500">
+                  {item.label}
+                </span>
+                <span>
+                  <span class="block text-xl font-semibold">{item.title}</span>
+                  <span class="mt-1 block text-sm leading-6 text-slate-600 dark:text-slate-400">
+                    {item.description}
+                  </span>
+                </span>
+                <span class="text-sm font-semibold text-slate-400 transition group-hover:translate-x-1 group-hover:text-current">
+                  Open
+                </span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-10 md:py-14">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <div class="grid gap-8 md:grid-cols-3">
+        {
+          capabilityGroups.map((group) => (
+            <div class="border-t border-slate-300 pt-5 dark:border-slate-700">
+              <h2 class="text-xl font-semibold tracking-normal text-slate-950 dark:text-white">{group.title}</h2>
+              <ul class="mt-4 space-y-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                {group.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="border-t border-slate-200/80 py-10 dark:border-slate-800 md:py-12">
+    <div class="mx-auto flex max-w-6xl flex-col gap-6 px-4 sm:px-6 md:flex-row md:items-end md:justify-between">
+      <div class="max-w-2xl">
+        <p class="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">
+          Project review
+        </p>
+        <h2 class="mt-3 text-3xl font-semibold tracking-normal text-slate-950 dark:text-white">
+          Send drawings, material targets, quantities, and acceptance requirements.
+        </h2>
+      </div>
+      <a class="btn-primary shrink-0" href={emailHref}>Email {email}</a>
+    </div>
+  </section>
+
+  <section class="py-10 md:py-12">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <div class="grid gap-6 md:grid-cols-3">
+        {
+          faqItems.map((item) => (
+            <div class="border-t border-slate-200 pt-5 dark:border-slate-800">
+              <h2 class="text-base font-semibold text-slate-950 dark:text-white">{item.title}</h2>
+              <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">{item.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>

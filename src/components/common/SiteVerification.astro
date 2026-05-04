@@ -1,0 +1,9 @@
+---
+import { SITE } from 'astrowind:config';
+
+const configuredGoogleSiteVerificationId = SITE.googleSiteVerificationId ? String(SITE.googleSiteVerificationId) : '';
+const googleSiteVerificationId =
+  import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION_ID || configuredGoogleSiteVerificationId;
+---
+
+{googleSiteVerificationId && <meta name="google-site-verification" content={googleSiteVerificationId} />}

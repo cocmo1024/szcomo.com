@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Como Precision">
+  <rect width="64" height="64" rx="12" fill="#050607" />
+  <circle cx="32" cy="32" r="18" fill="#f8fafc" />
+  <circle cx="32" cy="32" r="10" fill="#050607" />
+  <path d="M18 46h28" stroke="#7ec8e3" stroke-width="4" stroke-linecap="round" />
+  <path d="M46 18 18 46" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" />
+</svg>

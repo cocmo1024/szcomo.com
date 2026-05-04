@@ -1,0 +1,27 @@
+---
+import { Icon } from 'astro-icon/components';
+
+export interface Props {
+  icon?: string;
+  title?: string;
+  description?: string;
+}
+
+const {
+  icon = 'tabler:info-square',
+  title = await Astro.slots.render('title'),
+  description = await Astro.slots.render('description'),
+} = Astro.props;
+---
+
+<section class="not-prose py-4">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6">
+    <div
+      class="rounded-lg border border-[#ffffff29] bg-white px-5 py-4 text-md text-center font-medium shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur dark:bg-slate-900 dark:shadow-[0_4px_30px_rgba(0,0,0,0.1)] md:px-6"
+    >
+      <Icon name={icon} class="w-5 h-5 inline-block align-text-bottom font-bold" />
+      <span class="font-bold" set:html={title} />
+      <Fragment set:html={description} />
+    </div>
+  </div>
+</section>
