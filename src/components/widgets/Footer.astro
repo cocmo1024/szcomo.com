@@ -37,8 +37,7 @@ const { secondaryLinks = [], links = [], footNote = '', theme = 'light' } = Astr
           href={getHomePermalink()}>{SITE?.name}</a
         >
         <p class="mt-4 text-sm leading-6 text-muted dark:text-slate-400">
-          Industrial 3D printing, titanium and copper additive manufacturing, metal powders, and precision ceramic
-          machining.
+          Industrial additive manufacturing, metal powders, and precision ceramic machining.
         </p>
         <a
           class="mt-5 inline-flex text-sm font-medium text-slate-800 transition hover:text-slate-950 dark:text-slate-200 dark:hover:text-white"
@@ -61,7 +60,7 @@ const { secondaryLinks = [], links = [], footNote = '', theme = 'light' } = Astr
           )
         }
       </div>
-      <nav class="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4 lg:gap-x-10" aria-label="Footer navigation">
+      <nav class="grid grid-cols-2 gap-x-8 gap-y-8 lg:gap-x-10" aria-label="Footer navigation">
         {
           links.map(({ title, links }) => (
             <div>

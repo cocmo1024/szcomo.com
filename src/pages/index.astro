@@ -1,6 +1,11 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
-import heroComo from '~/assets/images/como/hero-como-cutout.png';
+import heroComo720Avif from '~/assets/images/como/hero-como-720.avif';
+import heroComo960Avif from '~/assets/images/como/hero-como-960.avif';
+import heroComo1332Avif from '~/assets/images/como/hero-como-1332.avif';
+import heroComo720Webp from '~/assets/images/como/hero-como-720.webp';
+import heroComo960Webp from '~/assets/images/como/hero-como-960.webp';
+import heroComo1332Webp from '~/assets/images/como/hero-como-1332.webp';
 import {
   createBreadcrumbSchema,
   createComoServiceSchema,
@@ -60,11 +65,6 @@ const capabilityGroups = [
 
 const faqItems = [
   {
-    title: 'What does Como Precision provide?',
-    description:
-      'Como Precision connects industrial 3D printing, metal powder supply, titanium and copper additive manufacturing, and precision ceramic machining under one engineering-focused company website.',
-  },
-  {
     title: 'How should a project inquiry be sent?',
     description:
       'Send drawings, CAD files, material requirements, quantity, target lead time, and critical performance or inspection requirements to info@szcomo.com.',
@@ -77,10 +77,10 @@ const faqItems = [
 ];
 
 const metadata = {
-  title: 'Como Precision | Metal Additive Manufacturing & Precision Ceramics',
+  title: 'Como Precision | Metal Additive Manufacturing & Ceramic Machining',
   ignoreTitleTemplate: true,
   description:
-    'Como Precision provides industrial 3D printing, titanium and copper additive manufacturing, metal powder supply, and precision ceramic machining for prototypes and production parts.',
+    'Como Precision provides industrial 3D printing, titanium and copper additive manufacturing, metal powder supply, and precision ceramic machining for prototypes and production.',
   openGraph: {
     images: [
       {
@@ -125,7 +125,7 @@ const metadata = {
           <h1
             class="mt-5 text-[2.35rem] font-semibold leading-[1.02] tracking-normal text-slate-950 dark:text-white sm:text-5xl md:text-7xl md:leading-[0.98]"
           >
-            Metal additive manufacturing & precision ceramics machining
+            Metal additive manufacturing & precision ceramic machining
           </h1>
           <p
             class="mt-5 max-w-xl text-base leading-7 text-slate-600 dark:text-slate-300 md:mt-6 md:text-lg md:leading-8"
@@ -140,15 +140,28 @@ const metadata = {
         </div>
 
         <div class="relative flex items-center justify-center md:min-h-[300px] lg:min-h-[520px] lg:justify-end">
-          <img
-            src={heroComo.src}
-            width={heroComo.width}
-            height={heroComo.height}
-            alt="Industrial metal additive manufacturing parts, copper components, and precision ceramic parts"
-            class="h-auto w-full max-w-[720px] object-contain sm:max-h-[36svh] md:max-h-[46svh] lg:-mr-8 lg:max-h-[64vh] lg:max-w-[860px] lg:scale-110 xl:-mr-14"
-            loading="eager"
-            decoding="async"
-          />
+          <picture>
+            <source
+              type="image/avif"
+              srcset={`${heroComo720Avif.src} 720w, ${heroComo960Avif.src} 960w, ${heroComo1332Avif.src} 1332w`}
+              sizes="(min-width: 1024px) 52vw, 100vw"
+            />
+            <source
+              type="image/webp"
+              srcset={`${heroComo720Webp.src} 720w, ${heroComo960Webp.src} 960w, ${heroComo1332Webp.src} 1332w`}
+              sizes="(min-width: 1024px) 52vw, 100vw"
+            />
+            <img
+              src={heroComo960Webp.src}
+              width={heroComo1332Webp.width}
+              height={heroComo1332Webp.height}
+              alt="Industrial metal additive manufacturing parts, copper components, and precision ceramic parts"
+              class="h-auto w-full max-w-[720px] object-contain sm:max-h-[36svh] md:max-h-[46svh] lg:-mr-8 lg:max-h-[64vh] lg:max-w-[860px] lg:scale-110 xl:-mr-14"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+            />
+          </picture>
         </div>
       </div>
     </div>

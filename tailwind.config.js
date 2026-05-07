@@ -3,7 +3,17 @@ import plugin from 'tailwindcss/plugin';
 import typographyPlugin from '@tailwindcss/typography';
 
 export default {
-  content: ['./src/**/*.{astro,html,js,jsx,json,md,mdx,svelte,ts,tsx,vue}'],
+  content: [
+    './src/pages/**/*.{astro,md}',
+    './src/layouts/**/*.astro',
+    './src/components/Logo.astro',
+    './src/components/Favicons.astro',
+    './src/components/CustomStyles.astro',
+    './src/components/common/**/*.astro',
+    './src/components/widgets/Header.astro',
+    './src/components/widgets/Footer.astro',
+    './src/components/widgets/Announcement.astro',
+  ],
   theme: {
     extend: {
       colors: {

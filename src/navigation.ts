@@ -13,7 +13,7 @@ export const headerData = {
       href: 'https://titanium3dp.com/',
     },
     {
-      text: 'Ceramic',
+      text: 'Ceramics',
       href: 'https://ceramiccnc.com/',
     },
     {
@@ -40,15 +40,6 @@ export const footerData = {
       ],
     },
     {
-      title: 'Services',
-      links: [
-        { text: 'Industrial 3D printing', href: getPermalink('/#services') },
-        { text: 'Metal AM powders', href: 'https://metal3dpowder.com/' },
-        { text: 'Ceramic machining', href: 'https://ceramiccnc.com/' },
-        { text: 'Project review', href: getPermalink('/#contact') },
-      ],
-    },
-    {
       title: 'Company',
       links: [
         { text: 'About', href: getPermalink('/about') },
@@ -61,6 +52,6 @@ export const footerData = {
   secondaryLinks: [],
   socialLinks: [],
   footNote: `
-    &copy; ${currentYear} Como Precision - Suzhou Como Precision Materials Co., Ltd. - All rights reserved.
+    &copy; ${currentYear} Suzhou Como Precision Materials Co., Ltd.
   `,
 };
