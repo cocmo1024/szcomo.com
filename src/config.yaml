@@ -8,9 +8,9 @@ site:
 
 metadata:
   title:
-    default: Como Precision | Metal Additive Manufacturing & Ceramic Machining
+    default: Como Precision | Advanced Materials & Additive Manufacturing
     template: '%s | Como Precision'
-  description: 'Como Precision provides industrial 3D printing, titanium and copper additive manufacturing, metal powder supply, and precision ceramic machining for prototypes and production.'
+  description: 'Como Precision supports industrial projects with advanced materials, 3D printing services, metal and ceramic materials, additive manufacturing equipment, and technical supply coordination.'
   robots:
     index: true
     follow: true

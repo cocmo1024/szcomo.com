@@ -1,19 +1,20 @@
 ---
-title: 'Industrial 3D Printing & Precision Materials'
-description: "Como Precision is Suzhou Como Precision Materials Co., Ltd.'s company site for industrial 3D printing, metal powders, titanium AM, copper AM, and precision ceramic machining."
+title: 'Advanced Materials & Additive Manufacturing'
+description: "Como Precision is Suzhou Como Precision Materials Co., Ltd.'s company site for advanced materials, industrial 3D printing, technical ceramics, metal materials, and technical supply coordination."
 layout: '~/layouts/MarkdownLayout.astro'
 ---
 
-Como Precision is Suzhou Como Precision Materials Co., Ltd.'s company site for industrial additive manufacturing and precision material processing.
+Como Precision is Suzhou Como Precision Materials Co., Ltd.'s company site for advanced material technologies, industrial additive manufacturing, and technical supply coordination.
 
-We coordinate four focused platforms: metal powders, titanium AM, copper AM, and precision ceramic machining.
+We support engineering and procurement teams across 3D printing services, metal and ceramic materials, additive manufacturing equipment, industrial components, and import/export project coordination.
 
 ## What We Do
 
-- Metal powder supply and application review.
-- Titanium and copper additive manufacturing.
-- Precision ceramic machining, finishing, and inspection planning.
-- Project review for drawings, CAD files, material targets, quantities, and acceptance requirements.
+- New material technology development and application review.
+- Synthetic materials, metal materials, ceramic materials, and selected composite material supply.
+- Industrial 3D printing, titanium AM, copper AM, and precision ceramic machining.
+- Additive manufacturing equipment, mechanical and electrical equipment, and electronic component sourcing support.
+- Import and export coordination for qualified material, equipment, and manufacturing projects.
 
 ## Service Platforms
 

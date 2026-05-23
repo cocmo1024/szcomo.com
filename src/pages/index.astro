@@ -21,7 +21,8 @@ const serviceLinks = [
     label: 'Metal powders',
     title: 'Spherical metal powders',
     href: 'https://metal3dpowder.com/',
-    description: 'Powder supply and application guidance for additive manufacturing programs.',
+    description:
+      'Metal material supply, spherical powders, and application guidance for additive manufacturing programs.',
   },
   {
     label: 'Titanium',
@@ -37,28 +38,41 @@ const serviceLinks = [
   },
   {
     label: 'Ceramics',
-    title: 'Precision ceramic machining',
+    title: 'Technical ceramic materials',
     href: 'https://ceramiccnc.com/',
-    description: 'Advanced technical ceramics, machining review, finishing, and inspection planning.',
+    description:
+      'New ceramic materials, special ceramic products, machining review, finishing, and inspection planning.',
+  },
+  {
+    label: 'Supply',
+    title: 'Industrial equipment and components',
+    href: '#contact',
+    description:
+      'Additive manufacturing equipment, mechanical and electrical equipment, electronic components, and trade support.',
   },
 ];
 
 const capabilityGroups = [
   {
     title: 'Materials',
-    items: ['Titanium alloys', 'Copper alloys', 'Advanced ceramics', 'Metal AM powders'],
+    items: ['Synthetic materials', 'Metal materials and powders', 'New ceramic materials', 'Fibers and composites'],
   },
   {
-    title: 'Processes',
-    items: ['LPBF metal AM', 'SLS and MJF networks', 'Precision ceramic machining', 'Finishing and QA support'],
-  },
-  {
-    title: 'Applications',
+    title: 'Manufacturing',
     items: [
-      'Thermal management',
-      'Aerospace and mobility',
-      'Semiconductor hardware',
-      'Industrial prototypes and production',
+      'Industrial 3D printing',
+      'Titanium and copper AM',
+      'Precision ceramic machining',
+      'Finishing and QA support',
+    ],
+  },
+  {
+    title: 'Technical supply',
+    items: [
+      'AM equipment',
+      'Mechanical and electrical equipment',
+      'Electronic components',
+      'Import and export support',
     ],
   },
 ];
@@ -67,20 +81,20 @@ const faqItems = [
   {
     title: 'How should a project inquiry be sent?',
     description:
-      'Send drawings, CAD files, material requirements, quantity, target lead time, and critical performance or inspection requirements to info@szcomo.com.',
+      'Send drawings, CAD files, material or equipment specifications, quantity, target lead time, and critical performance or inspection requirements to info@szcomo.com.',
   },
   {
-    title: 'Which service site should I use for technical details?',
+    title: 'Can Como support supply requests beyond 3D printing?',
     description:
-      'Use the linked dedicated sites for powders, titanium AM, copper AM, and ceramic machining when you need deeper material, process, or project guidance.',
+      'Yes. Como Precision supports qualified requests across advanced materials, ceramics, metal materials, additive manufacturing equipment, selected industrial components, and import/export coordination.',
   },
 ];
 
 const metadata = {
-  title: 'Como Precision | Metal Additive Manufacturing & Ceramic Machining',
+  title: 'Como Precision | Advanced Materials & Additive Manufacturing',
   ignoreTitleTemplate: true,
   description:
-    'Como Precision provides industrial 3D printing, titanium and copper additive manufacturing, metal powder supply, and precision ceramic machining for prototypes and production.',
+    'Como Precision supports industrial projects with advanced materials, 3D printing services, metal and ceramic materials, additive manufacturing equipment, and technical supply coordination.',
   openGraph: {
     images: [
       {
@@ -125,13 +139,13 @@ const metadata = {
           <h1
             class="mt-5 text-[2.35rem] font-semibold leading-[1.02] tracking-normal text-slate-950 dark:text-white sm:text-5xl md:text-7xl md:leading-[0.98]"
           >
-            Metal additive manufacturing & precision ceramic machining
+            Advanced materials, additive manufacturing & technical supply
           </h1>
           <p
             class="mt-5 max-w-xl text-base leading-7 text-slate-600 dark:text-slate-300 md:mt-6 md:text-lg md:leading-8"
           >
-            Titanium, copper, advanced technical ceramics, and metal powders for industrial prototypes, functional
-            parts, and production programs.
+            3D printing services, metal and ceramic materials, additive manufacturing equipment, and selected industrial
+            components for engineering and production teams.
           </p>
           <div class="mt-6 flex flex-wrap items-center gap-3 md:mt-8">
             <a class="btn-primary" href={emailHref}>Contact Como</a>
@@ -175,7 +189,7 @@ const metadata = {
             Service map
           </p>
           <h2 class="mt-3 text-3xl font-semibold tracking-normal text-slate-950 dark:text-white md:text-4xl">
-            One company, focused technical platforms.
+            One company, focused material and manufacturing platforms.
           </h2>
         </div>
         <div class="space-y-8 md:space-y-7">
@@ -228,7 +242,7 @@ const metadata = {
           Project review
         </p>
         <h2 class="mt-3 text-3xl font-semibold tracking-normal text-slate-950 dark:text-white">
-          Send drawings, material targets, quantities, and acceptance requirements.
+          Send drawings, material targets, equipment specs, quantities, and acceptance requirements.
         </h2>
       </div>
       <a class="btn-primary self-start shrink-0" href={emailHref}>Email {email}</a>
