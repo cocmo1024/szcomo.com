@@ -21,6 +21,10 @@ export const headerData = {
       href: 'https://copper3dp.com/',
     },
     {
+      text: 'Insights',
+      href: getPermalink('/insights'),
+    },
+    {
       text: 'Contact',
       href: getPermalink('/contact'),
     },
@@ -43,6 +47,7 @@ export const footerData = {
       title: 'Company',
       links: [
         { text: 'About', href: getPermalink('/about') },
+        { text: 'Insights & News', href: getPermalink('/insights') },
         { text: 'Contact', href: getPermalink('/contact') },
         { text: 'Privacy', href: getPermalink('/privacy') },
         { text: 'Terms', href: getPermalink('/terms') },

@@ -117,6 +117,8 @@ import { UI } from 'astrowind:config';
     function getPageType() {
       const path = window.location.pathname;
       if (path === '/') return 'home';
+      if (path === '/insights/' || path === '/insights') return 'resource_index';
+      if (path.startsWith('/insights/')) return 'article';
       if (path.startsWith('/posts/')) return 'article';
       if (path.startsWith('/category/') || path.startsWith('/tags/') || path.startsWith('/blog/tag/')) {
         return 'resource_index';

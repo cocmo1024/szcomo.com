@@ -1,0 +1,242 @@
+---
+import { render } from 'astro:content';
+import { Icon } from 'astro-icon/components';
+import Layout from '~/layouts/PageLayout.astro';
+import type { MetaData, Post } from '~/types';
+import {
+  getInsightHref,
+  getInsightReadingTime,
+  getInsightSlug,
+  getPublishedInsights,
+  getRelatedInsights,
+  type InsightEntry,
+} from '~/utils/insights';
+import { createArticleSchema, createBreadcrumbSchema } from '~/utils/structured-data';
+import ogComo from '~/assets/images/como/og-como.webp';
+
+interface Props {
+  entry: InsightEntry;
+  previous?: InsightEntry;
+  next?: InsightEntry;
+  related: InsightEntry[];
+}
+
+export async function getStaticPaths() {
+  const entries = await getPublishedInsights();
+
+  return entries.map((entry, index) => ({
+    params: { slug: getInsightSlug(entry) },
+    props: {
+      entry,
+      previous: entries[index + 1],
+      next: entries[index - 1],
+      related: getRelatedInsights(entry, entries),
+    },
+  }));
+}
+
+const { entry, previous, next, related } = Astro.props;
+const { Content, headings } = await render(entry);
+const href = getInsightHref(entry);
+const canonical = new URL(href, Astro.site);
+const tableOfContents = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const articlePost: Post = {
+  id: entry.id,
+  slug: getInsightSlug(entry),
+  permalink: href,
+  publishDate: entry.data.publishDate,
+  updateDate: entry.data.updateDate,
+  title: entry.data.title,
+  excerpt: entry.data.description,
+  category: { slug: entry.data.category.toLowerCase().replace(/[^a-z0-9]+/g, '-'), title: entry.data.category },
+  tags: entry.data.tags.map((tag) => ({ slug: tag.toLowerCase().replace(/[^a-z0-9]+/g, '-'), title: tag })),
+  author: entry.data.author,
+};
+
+const metadata: MetaData = {
+  title: entry.data.title,
+  description: entry.data.description,
+  canonical: String(canonical),
+  openGraph: {
+    type: 'article',
+    images: [
+      {
+        url: '~/assets/images/como/og-como.webp',
+        width: 1200,
+        height: 630,
+        alt: entry.data.title,
+      },
+    ],
+    article: {
+      publishedTime: entry.data.publishDate.toISOString(),
+      modifiedTime: (entry.data.updateDate || entry.data.publishDate).toISOString(),
+      authors: [entry.data.author],
+      section: entry.data.category,
+      tags: entry.data.tags,
+    },
+  },
+  structuredData: [
+    createBreadcrumbSchema([
+      { name: 'Home', item: '/' },
+      { name: 'Insights & News', item: '/insights/' },
+      { name: entry.data.title },
+    ]),
+    createArticleSchema({ post: articlePost, url: canonical, image: ogComo }),
+  ],
+};
+---
+
+<Layout metadata={metadata}>
+  <article>
+    <header class="border-b border-white/[0.08] py-12 md:py-18">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <a
+          href="/insights/"
+          class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+        >
+          <Icon name="tabler:arrow-left" class="h-4 w-4" /> Insights & News
+        </a>
+        <div class="mt-10 grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+              {entry.data.category}
+            </p>
+            <dl class="mt-5 space-y-2 text-sm leading-6 text-slate-500 dark:text-slate-500">
+              <div class="flex gap-2">
+                <dt>Published</dt>
+                <dd>
+                  <time datetime={entry.data.publishDate.toISOString()}>
+                    {
+                      entry.data.publishDate.toLocaleDateString('en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric',
+                        timeZone: 'UTC',
+                      })
+                    }
+                  </time>
+                </dd>
+              </div>
+              <div class="flex gap-2"><dt>Reading time</dt><dd>{getInsightReadingTime(entry)} minutes</dd></div>
+              <div class="flex gap-2"><dt>By</dt><dd>{entry.data.author}</dd></div>
+            </dl>
+          </div>
+          <div>
+            <h1 class="text-4xl font-semibold leading-tight tracking-normal text-slate-950 dark:text-white md:text-6xl">
+              {entry.data.title}
+            </h1>
+            <p class="mt-6 max-w-3xl text-lg leading-8 text-slate-600 dark:text-slate-300">
+              {entry.data.description}
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="mx-auto grid max-w-6xl gap-12 px-4 py-12 sm:px-6 md:py-16 lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-20">
+      <div class="min-w-0">
+        <div
+          class="prose prose-lg prose-slate max-w-3xl prose-headings:font-semibold prose-headings:tracking-normal prose-h2:mt-14 prose-h2:border-t prose-h2:border-slate-200 prose-h2:pt-10 prose-h3:mt-9 prose-a:font-medium prose-a:text-primary prose-li:my-1 prose-p:leading-8 dark:prose-invert dark:prose-headings:text-white dark:prose-h2:border-white/[0.1] dark:prose-p:text-slate-300 dark:prose-li:text-slate-300 dark:prose-a:text-slate-200 dark:prose-strong:text-white"
+        >
+          <Content />
+        </div>
+
+        <section class="mt-14 border-y border-white/[0.1] py-8">
+          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+            Project review
+          </p>
+          <div class="mt-4 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <p class="max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">
+              Send drawings, material requirements, quantities, and acceptance criteria for a scoped technical review.
+            </p>
+            <a class="btn-primary self-start shrink-0" href="mailto:info@szcomo.com">Contact Como</a>
+          </div>
+        </section>
+
+        {
+          (previous || next) && (
+            <nav class="mt-12 grid gap-6 sm:grid-cols-2" aria-label="Article navigation">
+              {previous ? (
+                <a class="group border-t border-white/[0.1] pt-5" href={getInsightHref(previous)}>
+                  <span class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Previous article</span>
+                  <span class="mt-2 block font-semibold text-slate-950 transition group-hover:text-slate-700 dark:text-white dark:group-hover:text-slate-200">
+                    {previous.data.title}
+                  </span>
+                </a>
+              ) : (
+                <span />
+              )}
+              {next && (
+                <a class="group border-t border-white/[0.1] pt-5 sm:text-right" href={getInsightHref(next)}>
+                  <span class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Next article</span>
+                  <span class="mt-2 block font-semibold text-slate-950 transition group-hover:text-slate-700 dark:text-white dark:group-hover:text-slate-200">
+                    {next.data.title}
+                  </span>
+                </a>
+              )}
+            </nav>
+          )
+        }
+      </div>
+
+      {
+        tableOfContents.length > 0 && (
+          <aside class="order-first lg:order-none">
+            <nav class="lg:sticky lg:top-28" aria-label="On this page">
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+                On this page
+              </p>
+              <ol class="mt-4 space-y-3 border-l border-white/[0.1] pl-4 text-sm leading-5">
+                {tableOfContents.map((heading) => (
+                  <li class:list={[{ 'pl-3': heading.depth === 3 }]}>
+                    <a
+                      class="text-slate-500 transition hover:text-slate-900 dark:hover:text-white"
+                      href={`#${heading.slug}`}
+                    >
+                      {heading.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </aside>
+        )
+      }
+    </div>
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="border-t border-white/[0.08] py-12 md:py-16">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6">
+          <div class="flex items-end justify-between gap-6">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                Continue reading
+              </p>
+              <h2 class="mt-3 text-3xl font-semibold tracking-normal text-slate-950 dark:text-white">
+                Related insights
+              </h2>
+            </div>
+            <a class="hidden text-sm font-semibold text-slate-500 hover:text-white sm:inline" href="/insights/">
+              View all
+            </a>
+          </div>
+          <div class="mt-8 grid gap-8 md:grid-cols-3">
+            {related.map((item) => (
+              <article class="border-t border-white/[0.1] pt-5">
+                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">{item.data.category}</p>
+                <h3 class="mt-3 text-lg font-semibold text-slate-950 dark:text-white">
+                  <a class="transition hover:text-slate-700 dark:hover:text-slate-200" href={getInsightHref(item)}>
+                    {item.data.title}
+                  </a>
+                </h3>
+                <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">{item.data.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</Layout>
