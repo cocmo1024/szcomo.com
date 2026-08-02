@@ -8,13 +8,19 @@ const entries = await getPublishedInsights();
 const featuredEntry = entries.find((entry) => entry.data.featured) || entries[0];
 const remainingEntries = featuredEntry ? entries.filter((entry) => entry.id !== featuredEntry.id) : [];
 
+const formatDate = (value: Date) =>
+  value.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+
 const metadata = {
   title: 'Insights & News',
   description:
-    'Technical articles, project guidance, and company news from Como Precision in one focused resource page.',
-  openGraph: {
-    type: 'website',
-  },
+    'Reviewed technical articles, industry summaries, project guidance, and company news from Como Precision.',
+  openGraph: { type: 'website' },
   structuredData: [
     createBreadcrumbSchema([{ name: 'Home', item: '/' }, { name: 'Insights & News' }]),
     ...(entries.length
@@ -45,8 +51,8 @@ const metadata = {
         </h1>
       </div>
       <p class="max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300 md:text-lg md:leading-8">
-        Technical articles, practical project guidance, and company updates—organized in one place for engineering and
-        procurement teams.
+        Reviewed technical articles, industry summaries, practical project guidance, and verified company updates for
+        engineering and procurement teams.
       </p>
     </div>
   </section>
@@ -65,12 +71,7 @@ const metadata = {
               </p>
               <p class="mt-4 text-sm text-slate-500 dark:text-slate-500">
                 <time datetime={featuredEntry.data.publishDate.toISOString()}>
-                  {featuredEntry.data.publishDate.toLocaleDateString('en-US', {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric',
-                    timeZone: 'UTC',
-                  })}
+                  {formatDate(featuredEntry.data.publishDate)}
                 </time>
                 <span aria-hidden="true"> · </span>
                 {getInsightReadingTime(featuredEntry)} min read
@@ -97,14 +98,7 @@ const metadata = {
                     <p class="font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
                       {entry.data.category}
                     </p>
-                    <time datetime={entry.data.publishDate.toISOString()}>
-                      {entry.data.publishDate.toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                        timeZone: 'UTC',
-                      })}
-                    </time>
+                    <time datetime={entry.data.publishDate.toISOString()}>{formatDate(entry.data.publishDate)}</time>
                   </div>
                   <div>
                     <h2 class="text-xl font-semibold tracking-normal text-slate-950 dark:text-white md:text-2xl">
@@ -141,8 +135,8 @@ const metadata = {
                 Publications will appear here.
               </h2>
               <p class="mt-4 text-base leading-7 text-slate-600 dark:text-slate-400">
-                This resource is reserved for technical articles, project guidance, and verified company updates. No
-                articles have been published yet.
+                Source material is researched and processed offline. Only reviewed summaries, technical articles, and
+                verified company updates are published here. No articles have been published yet.
               </p>
             </div>
           </div>

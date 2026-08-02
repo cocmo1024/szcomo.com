@@ -4,3 +4,4 @@ node_modules
 .changeset
 .playwright-cli
 src/data/post/*.md
+会话_*/

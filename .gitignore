@@ -25,3 +25,6 @@ preview.err.log
 pnpm-lock.yaml
 
 .astro
+
+# local editorial newsroom configuration and working material
+newsroom.config.local.json
